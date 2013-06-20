@@ -1,0 +1,1094 @@
+Index: guilib/GUIButtonControl.cpp
+===================================================================
+--- guilib/GUIButtonControl.cpp	(revision 35687)
++++ guilib/GUIButtonControl.cpp	(working copy)
+@@ -222,8 +222,9 @@
+ {
+   m_label.UpdateColors();
+   CGUIControl::UpdateColors();
+-  m_imgFocus.SetDiffuseColor(m_diffuseColor);
+-  m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
++  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
++  m_imgFocus.SetDiffuseColor(color);
++  m_imgNoFocus.SetDiffuseColor(color);
+ }
+ 
+ EVENT_RESULT CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+Index: guilib/GUICheckMarkControl.cpp
+===================================================================
+--- guilib/GUICheckMarkControl.cpp	(revision 35687)
++++ guilib/GUICheckMarkControl.cpp	(working copy)
+@@ -180,6 +180,7 @@
+ {
+   m_label.UpdateColors();
+   CGUIControl::UpdateColors();
+-  m_imgCheckMark.SetDiffuseColor(m_diffuseColor);
+-  m_imgCheckMarkNoFocus.SetDiffuseColor(m_diffuseColor);
++  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
++  m_imgCheckMark.SetDiffuseColor(color);
++  m_imgCheckMarkNoFocus.SetDiffuseColor(color);
+ }
+Index: guilib/GUIControl.cpp
+===================================================================
+--- guilib/GUIControl.cpp	(revision 35687)
++++ guilib/GUIControl.cpp	(working copy)
+@@ -44,6 +44,8 @@
+   m_enableCondition = 0;
+   m_enabled = true;
+   m_diffuseColor = 0xffffffff;
++  m_enabledDiffuseColor = 0xffffffff;
++  m_disabledDiffuseColor = 0x60ffffff;
+   m_posX = 0;
+   m_posY = 0;
+   m_width = 0;
+@@ -76,6 +78,8 @@
+   m_visible = VISIBLE;
+   m_visibleFromSkinCondition = true;
+   m_diffuseColor = 0xffffffff;
++  m_enabledDiffuseColor = 0xffffffff;
++  m_disabledDiffuseColor = 0x60ffffff;
+   m_forceHidden = false;
+   m_visibleCondition = 0;
+   m_enableCondition = 0;
+@@ -427,6 +431,16 @@
+   m_diffuseColor = color;
+ }
+ 
++void CGUIControl::SetEnabledColorDiffuse(const CGUIInfoColor &color)
++{
++  m_enabledDiffuseColor = color;
++}
++
++void CGUIControl::SetDisabledColorDiffuse(const CGUIInfoColor &color)
++{
++  m_disabledDiffuseColor = color;
++}
++
+ float CGUIControl::GetXPosition() const
+ {
+   return m_posX;
+Index: guilib/GUIControl.h
+===================================================================
+--- guilib/GUIControl.h	(revision 35687)
++++ guilib/GUIControl.h	(working copy)
+@@ -154,6 +154,8 @@
+   virtual void SetHitRect(const CRect &rect);
+   virtual void SetCamera(const CPoint &camera);
+   void SetColorDiffuse(const CGUIInfoColor &color);
++  void SetEnabledColorDiffuse(const CGUIInfoColor &color);
++  void SetDisabledColorDiffuse(const CGUIInfoColor &color);
+   CPoint GetRenderPosition() const;
+   virtual float GetXPosition() const;
+   virtual float GetYPosition() const;
+@@ -308,6 +310,8 @@
+   float m_width;
+   CRect m_hitRect;
+   CGUIInfoColor m_diffuseColor;
++  CGUIInfoColor m_disabledDiffuseColor;
++  CGUIInfoColor m_enabledDiffuseColor;
+   int m_controlID;
+   int m_parentID;
+   bool m_bHasFocus;
+Index: guilib/GUIControlFactory.cpp
+===================================================================
+--- guilib/GUIControlFactory.cpp	(revision 35687)
++++ guilib/GUIControlFactory.cpp	(working copy)
+@@ -615,6 +615,7 @@
+ 
+   int pageControl = 0;
+   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
++  CGUIInfoColor disabledColorDiffuse(0x60FFFFFF);
+   int defaultControl = 0;
+   bool  defaultAlways = false;
+   CStdString strTmp;
+@@ -777,6 +778,7 @@
+   XMLUtils::GetInt(pControlNode, "pagecontrol", pageControl);
+ 
+   GetInfoColor(pControlNode, "colordiffuse", colorDiffuse);
++  GetInfoColor(pControlNode, "disabledcolordiffuse", disabledColorDiffuse);
+ 
+   GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
+   GetCondition(pControlNode, "enable", enableCondition);
+@@ -1345,6 +1347,8 @@
+     control->SetEnableCondition(enableCondition);
+     control->SetAnimations(animations);
+     control->SetColorDiffuse(colorDiffuse);
++    control->SetEnabledColorDiffuse(colorDiffuse);
++    control->SetDisabledColorDiffuse(disabledColorDiffuse);
+     control->SetNavigation(up, down, left, right);
+     control->SetTabNavigation(next,prev);
+     control->SetNavigationActions(upActions, downActions, leftActions, rightActions);
+Index: guilib/GUIMoverControl.cpp
+===================================================================
+--- guilib/GUIMoverControl.cpp	(revision 35687)
++++ guilib/GUIMoverControl.cpp	(working copy)
+@@ -243,8 +243,9 @@
+ void CGUIMoverControl::UpdateColors()
+ {
+   CGUIControl::UpdateColors();
+-  m_imgFocus.SetDiffuseColor(m_diffuseColor);
+-  m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
++  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
++  m_imgFocus.SetDiffuseColor(color);
++  m_imgNoFocus.SetDiffuseColor(color);
+ }
+ 
+ void CGUIMoverControl::SetLimits(int iX1, int iY1, int iX2, int iY2)
+Index: guilib/GUIProgressControl.cpp
+===================================================================
+--- guilib/GUIProgressControl.cpp	(revision 35687)
++++ guilib/GUIProgressControl.cpp	(working copy)
+@@ -241,11 +241,12 @@
+ void CGUIProgressControl::UpdateColors()
+ {
+   CGUIControl::UpdateColors();
+-  m_guiBackground.SetDiffuseColor(m_diffuseColor);
+-  m_guiRight.SetDiffuseColor(m_diffuseColor);
+-  m_guiLeft.SetDiffuseColor(m_diffuseColor);
+-  m_guiMid.SetDiffuseColor(m_diffuseColor);
+-  m_guiOverlay.SetDiffuseColor(m_diffuseColor);
++  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
++  m_guiBackground.SetDiffuseColor(color);
++  m_guiRight.SetDiffuseColor(color);
++  m_guiLeft.SetDiffuseColor(color);
++  m_guiMid.SetDiffuseColor(color);
++  m_guiOverlay.SetDiffuseColor(color);
+ }
+ 
+ CStdString CGUIProgressControl::GetDescription() const
+Index: guilib/GUIRadioButtonControl.cpp
+===================================================================
+--- guilib/GUIRadioButtonControl.cpp	(revision 35687)
++++ guilib/GUIRadioButtonControl.cpp	(working copy)
+@@ -153,7 +153,8 @@
+ void CGUIRadioButtonControl::UpdateColors()
+ {
+   CGUIButtonControl::UpdateColors();
+-  m_imgRadioOn.SetDiffuseColor(m_diffuseColor);
+-  m_imgRadioOff.SetDiffuseColor(m_diffuseColor);
++  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
++  m_imgRadioOn.SetDiffuseColor(color);
++  m_imgRadioOff.SetDiffuseColor(color);
+ }
+ 
+Index: guilib/GUIResizeControl.cpp
+===================================================================
+--- guilib/GUIResizeControl.cpp	(revision 35687)
++++ guilib/GUIResizeControl.cpp	(working copy)
+@@ -224,8 +224,9 @@
+ void CGUIResizeControl::UpdateColors()
+ {
+   CGUIControl::UpdateColors();
+-  m_imgFocus.SetDiffuseColor(m_diffuseColor);
+-  m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
++  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
++  m_imgFocus.SetDiffuseColor(color);
++  m_imgNoFocus.SetDiffuseColor(color);
+ }
+ 
+ void CGUIResizeControl::SetLimits(float x1, float y1, float x2, float y2)
+Index: guilib/GUIScrollBarControl.cpp
+===================================================================
+--- guilib/GUIScrollBarControl.cpp	(revision 35687)
++++ guilib/GUIScrollBarControl.cpp	(working copy)
+@@ -309,11 +309,12 @@
+ void CGUIScrollBar::UpdateColors()
+ {
+   CGUIControl::UpdateColors();
+-  m_guiBackground.SetDiffuseColor(m_diffuseColor);
+-  m_guiBarNoFocus.SetDiffuseColor(m_diffuseColor);
+-  m_guiBarFocus.SetDiffuseColor(m_diffuseColor);
+-  m_guiNibNoFocus.SetDiffuseColor(m_diffuseColor);
+-  m_guiNibFocus.SetDiffuseColor(m_diffuseColor);
++  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
++  m_guiBackground.SetDiffuseColor(color);
++  m_guiBarNoFocus.SetDiffuseColor(color);
++  m_guiBarFocus.SetDiffuseColor(color);
++  m_guiNibNoFocus.SetDiffuseColor(color);
++  m_guiNibFocus.SetDiffuseColor(color);
+ }
+ 
+ bool CGUIScrollBar::IsVisible() const
+Index: guilib/GUISelectButtonControl.cpp
+===================================================================
+--- guilib/GUISelectButtonControl.cpp	(revision 35687)
++++ guilib/GUISelectButtonControl.cpp	(working copy)
+@@ -402,10 +402,11 @@
+ void CGUISelectButtonControl::UpdateColors()
+ {
+   CGUIButtonControl::UpdateColors();
+-  m_imgLeft.SetDiffuseColor(m_diffuseColor);
+-  m_imgLeftFocus.SetDiffuseColor(m_diffuseColor);
+-  m_imgRight.SetDiffuseColor(m_diffuseColor);
+-  m_imgRightFocus.SetDiffuseColor(m_diffuseColor);
+-  m_imgBackground.SetDiffuseColor(m_diffuseColor);
++  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
++  m_imgLeft.SetDiffuseColor(color);
++  m_imgLeftFocus.SetDiffuseColor(color);
++  m_imgRight.SetDiffuseColor(color);
++  m_imgRightFocus.SetDiffuseColor(color);
++  m_imgBackground.SetDiffuseColor(color);
+ }
+ 
+Index: guilib/GUISliderControl.cpp
+===================================================================
+--- guilib/GUISliderControl.cpp	(revision 35687)
++++ guilib/GUISliderControl.cpp	(working copy)
+@@ -349,9 +349,10 @@
+ void CGUISliderControl::UpdateColors()
+ {
+   CGUIControl::UpdateColors();
+-  m_guiBackground.SetDiffuseColor(m_diffuseColor);
+-  m_guiMid.SetDiffuseColor(m_diffuseColor);
+-  m_guiMidFocus.SetDiffuseColor(m_diffuseColor);
++  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
++  m_guiBackground.SetDiffuseColor(color);
++  m_guiMid.SetDiffuseColor(color);
++  m_guiMidFocus.SetDiffuseColor(color);
+ }
+ 
+ float CGUISliderControl::GetProportion() const
+Index: guilib/GUISliderControl.h
+===================================================================
+--- guilib/GUISliderControl.h	(revision 35687)
++++ guilib/GUISliderControl.h	(working copy)
+@@ -68,16 +68,16 @@
+   void SetType(int iType) { m_iType = iType; };
+   virtual CStdString GetDescription() const;
+   void SetTextValue(const CStdString &textValue) { m_textValue = textValue; };
++  /*! \brief Get the current position of the slider as a proportion
++   \return slider position in the range [0,1]
++   */
++  float GetProportion() const;
+ protected:
+   virtual bool HitTest(const CPoint &point) const;
+   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+   virtual void UpdateColors();
+   virtual void Move(int iNumSteps);
+   virtual void SetFromPosition(const CPoint &point);
+-  /*! \brief Get the current position of the slider as a proportion
+-   \return slider position in the range [0,1]
+-   */
+-  float GetProportion() const;
+ 
+   CGUITexture m_guiBackground;
+   CGUITexture m_guiMid;
+Index: guilib/GUISpinControl.cpp
+===================================================================
+--- guilib/GUISpinControl.cpp	(revision 35687)
++++ guilib/GUISpinControl.cpp	(working copy)
+@@ -915,10 +915,11 @@
+ {
+   m_label.UpdateColors();
+   CGUIControl::UpdateColors();
+-  m_imgspinDownFocus.SetDiffuseColor(m_diffuseColor);
+-  m_imgspinDown.SetDiffuseColor(m_diffuseColor);
+-  m_imgspinUp.SetDiffuseColor(m_diffuseColor);
+-  m_imgspinUpFocus.SetDiffuseColor(m_diffuseColor);
++  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
++  m_imgspinDownFocus.SetDiffuseColor(color);
++  m_imgspinDown.SetDiffuseColor(color);
++  m_imgspinUp.SetDiffuseColor(color);
++  m_imgspinUpFocus.SetDiffuseColor(color);
+ }
+ 
+ bool CGUISpinControl::IsVisible() const
+Index: guilib/GUISpinControlEx.cpp
+===================================================================
+--- guilib/GUISpinControlEx.cpp	(revision 35687)
++++ guilib/GUISpinControlEx.cpp	(working copy)
+@@ -104,7 +104,8 @@
+ void CGUISpinControlEx::UpdateColors()
+ {
+   CGUISpinControl::UpdateColors();
+-  m_buttonControl.SetColorDiffuse(m_diffuseColor);
++  CGUIInfoColor color = m_enabled ? m_enabledDiffuseColor : m_disabledDiffuseColor;
++  m_buttonControl.SetColorDiffuse(color);
+   m_buttonControl.UpdateColors();
+ }
+ 
+Index: xbmc/GUIDialogAddonSettings.cpp
+===================================================================
+--- xbmc/GUIDialogAddonSettings.cpp	(revision 35687)
++++ xbmc/GUIDialogAddonSettings.cpp	(working copy)
+@@ -39,13 +39,12 @@
+ #include "VideoInfoScanner.h"
+ #include "addons/Scraper.h"
+ #include "GUIWindowManager.h"
+-#include "Application.h"
+ #include "GUIDialogKeyboard.h"
+ #include "FileItem.h"
+ #include "Settings.h"
+ #include "GUIInfoManager.h"
+ #include "GUIDialogSelect.h"
+-#include "utils/log.h"
++#include "utils/Builtins.h"
+ 
+ using namespace std;
+ using namespace ADDON;
+@@ -66,8 +65,8 @@
+ #define ID_BUTTON_DEFAULT               12
+ #define CONTROL_HEADING_LABEL           20
+ 
+-#define CONTROL_START_SETTING           100
+-#define CONTROL_START_SECTION           200
++#define CONTROL_START_SETTING           200
++#define CONTROL_START_SECTION           100
+ 
+ CGUIDialogAddonSettings::CGUIDialogAddonSettings()
+    : CGUIDialogBoxBase(WINDOW_DIALOG_ADDON_SETTINGS, "DialogAddonSettings.xml")
+@@ -107,6 +106,10 @@
+           m_bConfirmed = true;
+           SaveSettings();
+         }
++        if (iControl == ID_BUTTON_OK && !m_closeAction.IsEmpty())
++        {
++          CBuiltins::Execute(m_closeAction);
++        }
+         Close();
+         return true;
+       }
+@@ -119,7 +122,6 @@
+       if (focusedControl >= CONTROL_START_SECTION && focusedControl < (int)(CONTROL_START_SECTION + m_totalSections) &&
+           focusedControl - CONTROL_START_SECTION != (int)m_currentSection)
+       { // changing section
+-        UpdateFromControls();
+         m_currentSection = focusedControl - CONTROL_START_SECTION;
+         CreateControls();
+       }
+@@ -131,6 +133,7 @@
+ 
+ void CGUIDialogAddonSettings::OnInitWindow()
+ {
++  m_closeAction = "";
+   m_currentSection = 0;
+   m_totalSections = 1;
+   CreateSections();
+@@ -144,7 +147,6 @@
+   if (!addon)
+     return false;
+ 
+-  bool ret(false);
+   if (addon->HasSettings())
+   { 
+     // Create the dialog
+@@ -162,14 +164,13 @@
+     pDialog->m_addon = addon;
+     pDialog->m_saveToDisk = saveToDisk;
+     pDialog->DoModal();
+-    ret = true;
++    return pDialog->m_bConfirmed;
+   }
+   else
+   { // addon does not support settings, inform user
+     CGUIDialogOK::ShowAndGetInput(24000,0,24030,0);
++    return false;
+   }
+-
+-  return ret;
+ }
+ 
+ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
+@@ -182,14 +183,14 @@
+   {
+     if (controlId == iControl)
+     {
++      const char *id = setting->Attribute("id");
++      const char *type = setting->Attribute("type");
++      CStdString value = m_settings[id];
+       const CGUIControl* control = GetControl(controlId);
+       if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+       {
+-        const char *id = setting->Attribute("id");
+-        const char *type = setting->Attribute("type");
+         const char *option = setting->Attribute("option");
+         const char *source = setting->Attribute("source");
+-        CStdString value = m_buttonValues[id];
+         CStdString label = GetString(setting->Attribute("label"));
+ 
+         if (strcmp(type, "text") == 0)
+@@ -359,15 +360,12 @@
+         }
+         else if (strcmpi(type, "action") == 0)
+         {
+-          CStdString action = setting->Attribute("action");
+-          if (!action.IsEmpty())
++          if (setting->Attribute("action"))
+           {
+-            // replace $CWD with the url of plugin/script
+-            action.Replace("$CWD", m_addon->Path());
+-            action.Replace("$ID", m_addon->ID());
++            CStdString action = NormalizePath(setting->Attribute("action"));
+             if (option)
+               bCloseDialog = (strcmpi(option, "close") == 0);
+-            g_application.getApplicationMessenger().ExecBuiltIn(action);
++            CBuiltins::Execute(action);
+           }
+         }
+         else if (strcmp(type, "date") == 0)
+@@ -399,61 +397,35 @@
+             ((CGUIButtonControl*) control)->SetLabel2(value);
+           }
+         }
+-        m_buttonValues[id] = value;
+-        break;
+       }
+-    }
+-    setting = setting->NextSiblingElement("setting");
+-    controlId++;
+-  }
+-  EnableControls();
+-  return bCloseDialog;
+-}
+-
+-void CGUIDialogAddonSettings::UpdateFromControls()
+-{
+-  int controlID = CONTROL_START_SETTING;
+-  const TiXmlElement *setting = GetFirstSetting();
+-  while (setting)
+-  {
+-    CStdString id = setting->Attribute("id");
+-    const char *type = setting->Attribute("type");
+-    const CGUIControl* control = GetControl(controlID++);
+-
+-    if (control)
+-    {
+-      CStdString value;
+-      switch (control->GetControlType())
++      else if (control->GetControlType() == CGUIControl::GUICONTROL_RADIO)
+       {
+-        case CGUIControl::GUICONTROL_BUTTON:
+-          value = m_buttonValues[id];
+-          break;
+-        case CGUIControl::GUICONTROL_RADIO:
+-          value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
+-          break;
+-        case CGUIControl::GUICONTROL_SPINEX:
+-          if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
+-            value = ((CGUISpinControlEx*) control)->GetLabel();
+-          else
+-            value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
+-          break;
+-        case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
+-          value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
+-          break;
+-        default:
+-          break;
++        value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
+       }
++      else if (control->GetControlType() == CGUIControl::GUICONTROL_SPINEX)
++      {
++        if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
++          value = ((CGUISpinControlEx*) control)->GetLabel();
++        else
++          value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
++      }
++      else if (control->GetControlType() == CGUIControl::GUICONTROL_SETTINGS_SLIDER)
++      {
++        SetSliderTextValue(control, setting->Attribute("format"));
++        value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
++      }
+       m_settings[id] = value;
++      SetEnabledProperty(id);
++      break;
+     }
+-
+     setting = setting->NextSiblingElement("setting");
++    controlId++;
+   }
++  return bCloseDialog;
+ }
+ 
+ void CGUIDialogAddonSettings::SaveSettings(void)
+ {
+-  UpdateFromControls();
+-
+   for (map<CStdString, CStdString>::iterator i = m_settings.begin(); i != m_settings.end(); ++i)
+     m_addon->UpdateSetting(i->first, i->second);
+ 
+@@ -470,7 +442,6 @@
+     group->ClearAll();
+   }
+   m_settings.clear();
+-  m_buttonValues.clear();
+ }
+ 
+ void CGUIDialogAddonSettings::FreeControls()
+@@ -497,8 +468,13 @@
+   // clear the category group
+   FreeSections();
+ 
++  const TiXmlElement *settings = m_addon->GetSettingsXML();
++  // grab any onclose action
++  if (settings->Attribute("onclose"))
++    m_closeAction = NormalizePath(settings->Attribute("onclose"));
++
+   // grab our categories
+-  const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");
++  const TiXmlElement *category = settings->FirstChildElement("category");
+   if (!category) // add a default one...
+     category = m_addon->GetSettingsXML();
+  
+@@ -517,6 +493,10 @@
+       button->SetID(buttonID++);
+       button->SetLabel(label);
+       button->SetVisible(true);
++      if (category->Attribute("visible"))
++        button->SetVisibleCondition(g_infoManager.TranslateString(category->Attribute("visible")), false);
++      if (category->Attribute("enable"))
++        button->SetEnableCondition(g_infoManager.TranslateString(category->Attribute("enable")));
+       group->AddControl(button);
+     }
+ 
+@@ -526,7 +506,10 @@
+     {
+       const char *id = setting->Attribute("id");
+       if (id)
++      {
+         m_settings[id] = m_addon->GetSetting(id);
++        SetEnabledProperty(id);
++      }
+       setting = setting->NextSiblingElement("setting");
+     }
+     category = category->NextSiblingElement("category");
+@@ -582,7 +565,7 @@
+       entries = setting->Attribute("entries");
+     CStdString defaultValue;
+     if (setting->Attribute("default"))
+-      defaultValue= setting->Attribute("default");
++      defaultValue = setting->Attribute("default");
+     const char *subsetting = setting->Attribute("subsetting");
+     CStdString label = GetString(setting->Attribute("label"), subsetting && 0 == strcmpi(subsetting, "true"));
+ 
+@@ -593,6 +576,10 @@
+ 
+     if (type)
+     {
++      CStdString value;
++      if (id)
++        value = NormalizePath(m_settings[id]);
++
+       if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
+         strcmpi(type, "number") == 0 ||strcmpi(type, "video") == 0 ||
+         strcmpi(type, "audio") == 0 || strcmpi(type, "image") == 0 ||
+@@ -607,8 +594,6 @@
+         ((CGUIButtonControl *)pControl)->SetLabel(label);
+         if (id)
+         {
+-          CStdString value = m_settings[id];
+-          m_buttonValues[id] = value;
+           // get any option to test for hidden
+           const char *option = setting->Attribute("option");
+           if (option && (strstr(option, "urlencoded")))
+@@ -724,6 +709,7 @@
+         ((CGUISettingsSliderControl *)pControl)->SetFloatRange(fMin, fMax);
+         ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(fInc);
+         ((CGUISettingsSliderControl *)pControl)->SetFloatValue((float)atof(m_settings[id]));
++        SetSliderTextValue(pControl, setting->Attribute("format"));
+       }
+       else if (strcmpi(type, "lsep") == 0)
+       {
+@@ -739,6 +725,15 @@
+     {
+       pControl->SetWidth(group->GetWidth());
+       pControl->SetVisible(true);
++      if (setting->Attribute("visible"))
++      {
++        CGUIInfoBool allowHiddenFocus(false);
++        if (setting->Attribute("allowhiddenfocus"))
++          allowHiddenFocus.Parse(setting->Attribute("allowhiddenfocus"));
++        pControl->SetVisibleCondition(g_infoManager.TranslateString(setting->Attribute("visible")), allowHiddenFocus);
++      }
++      if (setting->Attribute("enable"))
++        pControl->SetEnableCondition(g_infoManager.TranslateString(setting->Attribute("enable")));
+       pControl->SetID(controlId);
+       pControl->AllocResources();
+       group->AddControl(pControl);
+@@ -747,24 +742,18 @@
+ 
+     setting = setting->NextSiblingElement("setting");
+     controlId++;
+-    if (controlId >= CONTROL_START_SECTION)
+-    {
+-      CLog::Log(LOGERROR, "%s - cannot have more than %d controls per category - simplify your addon!", __FUNCTION__, CONTROL_START_SECTION - CONTROL_START_SETTING);
+-      break;
+-    }
+   }
+-  EnableControls();
+ }
+ 
+ vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &path, const CStdString &mask, const CStdString &options) const
+ {
+   // Create our base path, used for type "fileenum" settings
+-  // replace $PROFILE with the profile path of the plugin/script
+-  CStdString fullPath = path;
+-  if (fullPath.Find("$PROFILE") >= 0)
+-    fullPath.Replace("$PROFILE", m_addon->Profile());
++  CStdString fullPath;
++  // replace $CWD with the path and $PROFILE with the profile path of the addon
++  if (path.Find("$CWD") >= 0 || path.Find("$PROFILE") >= 0)
++    fullPath = NormalizePath(path);
+   else
+-    fullPath = CUtil::AddFileToFolder(m_addon->Path(), path);
++    fullPath = CUtil::ValidatePath(CUtil::AddFileToFolder(m_addon->Path(), path));
+ 
+   bool hideExtensions = (options.CompareNoCase("hideext") == 0);
+   // fetch directory
+@@ -788,137 +777,58 @@
+   return values;
+ }
+ 
+-// Go over all the settings and set their enabled condition according to the values of the enabled attribute
+-void CGUIDialogAddonSettings::EnableControls()
++void CGUIDialogAddonSettings::SetEnabledProperty(const CStdString &id)
+ {
+-  int controlId = CONTROL_START_SETTING;
+-  const TiXmlElement *setting = GetFirstSetting();
+-  while (setting)
+-  {
+-    const CGUIControl* control = GetControl(controlId);
+-    if (control)
+-    {
+-      // set enable status
+-      if (setting->Attribute("enable"))
+-        ((CGUIControl*) control)->SetEnabled(GetCondition(setting->Attribute("enable"), controlId));
+-      else
+-        ((CGUIControl*) control)->SetEnabled(true);
+-      // set visible status
+-      if (setting->Attribute("visible"))
+-        ((CGUIControl*) control)->SetVisible(GetCondition(setting->Attribute("visible"), controlId));
+-      else
+-        ((CGUIControl*) control)->SetVisible(true);
+-    }
+-    setting = setting->NextSiblingElement("setting");
+-    controlId++;
+-  }
++  SetProperty(id, m_settings[id]);
+ }
+ 
+-bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const int controlId)
++CStdString CGUIDialogAddonSettings::GetString(const char *value, bool subSetting) const
+ {
+-  if (condition.IsEmpty()) return true;
++  if (!value)
++    return "";
++  int id = atoi(value);
++  CStdString prefix(subSetting ? "- " : "");
++  if (id > 0)
++    return prefix + m_addon->GetString(id);
+ 
+-  bool bCondition = true;
+-  bool bCompare = true;
+-  vector<CStdString> conditionVec;
+-  if (condition.Find("+") >= 0)
+-    CUtil::Tokenize(condition, conditionVec, "+");
+-  else
+-  {
+-    bCondition = false;
+-    bCompare = false;
+-    CUtil::Tokenize(condition, conditionVec, "|");
+-  }
++  // localize values
++  CStdString strValue = CGUIInfoLabel::ReplaceLocalize(value);
++  strValue = CGUIInfoLabel::ReplaceAddonStrings(strValue);
++  return prefix + strValue;
++}
+ 
+-  for (unsigned int i = 0; i < conditionVec.size(); i++)
++void CGUIDialogAddonSettings::SetSliderTextValue(const CGUIControl *control, const char *format)
++{
++  if (format)
+   {
+-    vector<CStdString> condVec;
+-    if (!TranslateSingleString(conditionVec[i], condVec)) continue;
++    CStdString strValue;
++    vector<CStdString> formats;
++    StringUtils::SplitString(format, ",", formats);
+ 
+-    const CGUIControl* control2 = GetControl(controlId + atoi(condVec[1]));
++    if (formats.size() == 3 && !formats[2].IsEmpty() && ((CGUISettingsSliderControl *)control)->GetProportion() == 1.0f)
++      strValue.Format(GetString(formats[2]), ((CGUISettingsSliderControl *)control)->GetFloatValue());
++    else if (formats.size() >= 2 && !formats[1].IsEmpty() && ((CGUISettingsSliderControl *)control)->GetProportion() == 0.0f)
++      strValue.Format(GetString(formats[1]), ((CGUISettingsSliderControl *)control)->GetFloatValue());
++    else
++      strValue.Format(GetString(formats[0]), ((CGUISettingsSliderControl *)control)->GetFloatValue());
+ 
+-    CStdString value;
+-    switch (control2->GetControlType())
+-    {
+-      case CGUIControl::GUICONTROL_BUTTON:
+-        value = ((CGUIButtonControl*) control2)->GetLabel2();
+-        break;
+-      case CGUIControl::GUICONTROL_RADIO:
+-        value = ((CGUIRadioButtonControl*) control2)->IsSelected() ? "true" : "false";
+-        break;
+-      case CGUIControl::GUICONTROL_SPINEX:
+-        if (((CGUISpinControlEx*) control2)->GetFloatValue() > 0.0f)
+-          value = ((CGUISpinControlEx*) control2)->GetLabel();
+-        else
+-          value.Format("%i", ((CGUISpinControlEx*) control2)->GetValue());
+-        break;
+-      default:
+-        break;
+-    }
+-
+-    if (condVec[0].Equals("eq"))
+-    {
+-      if (bCompare)
+-        bCondition &= value.Equals(condVec[2]);
+-      else
+-        bCondition |= value.Equals(condVec[2]);
+-    }
+-    else if (condVec[0].Equals("!eq"))
+-    {
+-      if (bCompare)
+-        bCondition &= !value.Equals(condVec[2]);
+-      else
+-        bCondition |= !value.Equals(condVec[2]);
+-    }
+-    else if (condVec[0].Equals("gt"))
+-    {
+-      if (bCompare)
+-        bCondition &= (atoi(value) > atoi(condVec[2]));
+-      else
+-        bCondition |= (atoi(value) > atoi(condVec[2]));
+-    }
+-    else if (condVec[0].Equals("lt"))
+-    {
+-      if (bCompare)
+-        bCondition &= (atoi(value) < atoi(condVec[2]));
+-      else
+-        bCondition |= (atoi(value) < atoi(condVec[2]));
+-    }
++    ((CGUISettingsSliderControl *)control)->SetTextValue(strValue);
+   }
+-  return bCondition;
+ }
+ 
+-bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strCondition, vector<CStdString> &condVec)
++CStdString CGUIDialogAddonSettings::NormalizePath(const char *path) const
+ {
+-  CStdString strTest = strCondition;
+-  strTest.ToLower();
+-  strTest.TrimLeft(" ");
+-  strTest.TrimRight(" ");
++  CStdString normalPath = path;
++  // replace $CWD with the addon's path
++  normalPath.Replace("$CWD", m_addon->Path());
++  // replace $PROFILE with the profile path of the addon
++  normalPath.Replace("$PROFILE", m_addon->Profile());
++  // replace $ID with the addon's id
++  normalPath.Replace("$ID", m_addon->ID());
+ 
+-  int pos1 = strTest.Find("(");
+-  int pos2 = strTest.Find(",");
+-  int pos3 = strTest.Find(")");
+-  if (pos1 >= 0 && pos2 > pos1 && pos3 > pos2)
+-  {
+-    condVec.push_back(strTest.Left(pos1));
+-    condVec.push_back(strTest.Mid(pos1 + 1, pos2 - pos1 - 1));
+-    condVec.push_back(strTest.Mid(pos2 + 1, pos3 - pos2 - 1));
+-    return true;
+-  }
+-  return false;
++  return CUtil::ValidatePath(normalPath, true);
+ }
+ 
+-CStdString CGUIDialogAddonSettings::GetString(const char *value, bool subSetting) const
+-{
+-  if (!value)
+-    return "";
+-  int id = atoi(value);
+-  CStdString prefix(subSetting ? "- " : "");
+-  if (id > 0)
+-    return prefix + m_addon->GetString(id);
+-  return prefix + value;
+-}
+-
+ // Go over all the settings and set their default values
+ void CGUIDialogAddonSettings::SetDefaults()
+ {
+@@ -945,8 +855,9 @@
+           m_settings[id] = "false";
+         else if (type && (0 == strcmpi(type, "slider") || 0 == strcmpi(type, "enum")))
+           m_settings[id] = "0";
+-        else
++        else if (0 != strcmpi(type, "action"))
+           m_settings[id] = "";
++        SetEnabledProperty(id);
+       }
+       setting = setting->NextSiblingElement("setting");
+     }
+Index: xbmc/GUIDialogAddonSettings.h
+===================================================================
+--- xbmc/GUIDialogAddonSettings.h	(revision 35687)
++++ xbmc/GUIDialogAddonSettings.h	(working copy)
+@@ -60,26 +60,25 @@
+   void FreeSections();
+   void CreateControls();
+   void FreeControls();
+-  void UpdateFromControls();
+-  void EnableControls();
+   void SetDefaults();
+-  bool GetCondition(const CStdString &condition, const int controlId);
++  void SetEnabledProperty(const CStdString &id);
+ 
+   void SaveSettings(void);
+   bool ShowVirtualKeyboard(int iControl);
+-  bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
+ 
+   const TiXmlElement *GetFirstSetting() const;
+ 
+   ADDON::AddonPtr m_addon;
+   CStdString m_strHeading;
+-  std::map<CStdString,CStdString> m_buttonValues;
++  CStdString m_closeAction;
+   bool m_changed;
+   bool m_saveToDisk; // whether the addon settings should be saved to disk or just stored locally in the addon
+ 
+   unsigned int m_currentSection;
+   unsigned int m_totalSections;
+ 
++  CStdString NormalizePath(const char *value) const;
++  void SetSliderTextValue(const CGUIControl *control, const char *format);
++
+   std::map<CStdString,CStdString> m_settings; // local storage of values
+ };
+-
+Index: xbmc/lib/libPython/xbmcmodule/PythonAddon.cpp
+===================================================================
+--- xbmc/lib/libPython/xbmcmodule/PythonAddon.cpp	(revision 35687)
++++ xbmc/lib/libPython/xbmcmodule/PythonAddon.cpp	(working copy)
+@@ -23,6 +23,7 @@
+ #include "pyutil.h"
+ #include "addons/AddonManager.h"
+ #include "GUIDialogAddonSettings.h"
++#include "utils/Weather.h"
+ 
+ #ifndef __GNUC__
+ #pragma code_seg("PY_TEXT")
+@@ -182,21 +183,29 @@
+   }
+ 
+   PyDoc_STRVAR(openSettings__doc__,
+-    "openSettings() -- Opens this scripts settings dialog.\n"
++    "openSettings() -- Opens this addons settings dialog. Returns True if user changed settings.\n"
+     "\n"
+     "example:\n"
+-    "  - self.Settings.openSettings()\n");
++    "  - ok = self.Settings.openSettings()\n");
+ 
+   PyObject* Addon_OpenSettings(Addon *self, PyObject *args, PyObject *kwds)
+   {
++    bool ok;
++    AddonPtr addon(self->pAddon);
++
+     // show settings dialog
+-    AddonPtr addon(self->pAddon);
+     Py_BEGIN_ALLOW_THREADS
+-    CGUIDialogAddonSettings::ShowAndGetInput(addon);
++    ok = CGUIDialogAddonSettings::ShowAndGetInput(addon);
+     Py_END_ALLOW_THREADS
+ 
+-    Py_INCREF(Py_None);
+-    return Py_None;
++    // refresh weather if weather settings
++    if (ok && self->pAddon->Type() == ADDON::ADDON_SCRIPT_WEATHER)
++    {
++      g_weatherManager.Refresh();
++      g_weatherManager.Reset();
++    }
++
++    return Py_BuildValue((char*)"b", ok);
+   }
+ 
+   PyDoc_STRVAR(getAddonInfo__doc__,
+@@ -205,8 +214,8 @@
+     "id        : string - id of the property that the module needs to access.\n"
+     "\n"
+     // Handle all props available
+-    "*Note, choices are (author, changelog, description, disclaimer, fanart. icon, id, name, path\n"
+-    "                    profile, stars, summary, type, version)\n"
++    "*Note, choices are (author, changelog, description, disclaimer, fanart. icon, id, libpath,\n"
++    "                    library, name, path, profile, stars, summary, type, version)\n"
+     "\n"
+     "       You can use the above as keywords for arguments.\n"
+     "\n"
+@@ -242,6 +251,10 @@
+       return Py_BuildValue((char*)"s", self->pAddon->Icon().c_str());
+     else if (strcmpi(id, "id") == 0)
+       return Py_BuildValue((char*)"s", self->pAddon->ID().c_str());
++    else if (strcmpi(id, "libpath") == 0)
++      return Py_BuildValue((char*)"s", self->pAddon->LibPath().c_str());
++    else if (strcmpi(id, "library") == 0)
++      return Py_BuildValue((char*)"s", CUtil::GetFileName(self->pAddon->LibPath()).c_str());
+     else if (strcmpi(id, "name") == 0)
+       return Py_BuildValue((char*)"s", self->pAddon->Name().c_str());
+     else if (strcmpi(id, "path") == 0)
+Index: xbmc/lib/libPython/xbmcmodule/xbmcmodule.cpp
+===================================================================
+--- xbmc/lib/libPython/xbmcmodule/xbmcmodule.cpp	(revision 35687)
++++ xbmc/lib/libPython/xbmcmodule/xbmcmodule.cpp	(working copy)
+@@ -819,7 +819,7 @@
+     "\n"
+     "id             : string - id of setting to return\n"
+     "\n"
+-    "*Note, choices are (dateshort, datelong, time, meridiem, tempunit, speedunit)\n"
++    "*Note, choices are (dateshort, datelong, locale, meridiem, speedunit, tempunit, time)\n"
+     "\n"
+     "       You can use the above as keywords for arguments.\n"
+     "\n"
+@@ -844,20 +844,18 @@
+ 
+     CStdString result;
+ 
+-    if (strcmpi(id, "datelong") == 0)
++    if (strcmpi(id, "datelong") == 0 || strcmpi(id, "dateshort") == 0)
+     {
+-      result = g_langInfo.GetDateFormat(true);
++      result = g_langInfo.GetDateFormat(strcmpi(id, "datelong") == 0 ? true : false);
++      // make python compatible
+       result.Replace("DDDD", "%A");
+       result.Replace("MMMM", "%B");
+-      result.Replace("D", "%d");
+-      result.Replace("YYYY", "%Y");
+-    }
+-    else if (strcmpi(id, "dateshort") == 0)
+-    {
+-      result = g_langInfo.GetDateFormat(false);
+       result.Replace("MM", "%m");
++      result.Replace("M", "%m");
+       result.Replace("DD", "%d");
++      result.Replace("D", "%d");
+       result.Replace("YYYY", "%Y");
++      result.Replace("YY", "%y");
+     }
+     else if (strcmpi(id, "tempunit") == 0)
+       result = g_langInfo.GetTempUnitString();
+@@ -866,7 +864,11 @@
+     else if (strcmpi(id, "time") == 0)
+     {
+       result = g_langInfo.GetTimeFormat();
+-      result.Replace("H", "%H");
++      // make python compatible
++      if (result.Find("HH") >=0)
++        result.Replace("HH", "%H");
++      else
++        result.Replace("H", "%H");
+       result.Replace("h", "%I");
+       result.Replace("mm", "%M");
+       result.Replace("ss", "%S");
+@@ -874,6 +876,8 @@
+     }
+     else if (strcmpi(id, "meridiem") == 0)
+       result.Format("%s/%s", g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM), g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM));
++    else if (strcmpi(id, "locale") == 0)
++      result = g_langInfo.GetDVDAudioLanguage();
+ 
+     return Py_BuildValue((char*)"s", result.c_str());
+   }
+Index: xbmc/utils/GUIInfoManager.cpp
+===================================================================
+--- xbmc/utils/GUIInfoManager.cpp	(revision 35687)
++++ xbmc/utils/GUIInfoManager.cpp	(working copy)
+@@ -137,8 +137,9 @@
+ /// Player.HasVideo | Player.HasAudio (Logical or)
+ int CGUIInfoManager::TranslateString(const CStdString &condition)
+ {
+-  // translate $LOCALIZE as required
++  // translate $LOCALIZE and $ADDON as required
+   CStdString strCondition(CGUIInfoLabel::ReplaceLocalize(condition));
++  strCondition = CGUIInfoLabel::ReplaceAddonStrings(strCondition);
+   if (strCondition.find_first_of("|") != strCondition.npos ||
+       strCondition.find_first_of("+") != strCondition.npos ||
+       strCondition.find_first_of("[") != strCondition.npos ||
+@@ -452,6 +453,16 @@
+     CStdString str = strTest.Mid(8, strTest.GetLength() - 9);
+     return AddMultiInfo(GUIInfo(bNegate ? -STRING_IS_EMPTY : STRING_IS_EMPTY, TranslateSingleString(str)));
+   }
++  else if (strTest.Left(7).Equals("istrue("))
++  {
++    CStdString str = strTest.Mid(7, strTest.GetLength() - 8);
++    return AddMultiInfo(GUIInfo(bNegate ? -VALUE_IS_TRUE : VALUE_IS_TRUE, TranslateSingleString(str)));
++  }
++  else if (strTest.Left(14).Equals("addon.setting("))
++  {
++    CStdString str = strTest.Mid(14, strTest.GetLength() - 15);
++    return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, WINDOW_DIALOG_ADDON_SETTINGS, ConditionalStringParameter(str)));
++  }
+   else if (strTest.Left(14).Equals("stringcompare("))
+   {
+     int pos = strTest.Find(",");
+@@ -971,6 +982,7 @@
+   else if (info.Equals("rating")) return MUSICPLAYER_RATING;
+   else if (info.Equals("comment")) return MUSICPLAYER_COMMENT;
+   else if (info.Equals("lyrics")) return MUSICPLAYER_LYRICS;
++  else if (info.Equals("filename")) return MUSICPLAYER_FILENAME;
+   else if (info.Equals("playlistplaying")) return MUSICPLAYER_PLAYLISTPLAYING;
+   else if (info.Equals("exists")) return MUSICPLAYER_EXISTS;
+   else if (info.Equals("hasprevious")) return MUSICPLAYER_HASPREVIOUS;
+@@ -1123,6 +1135,7 @@
+   case MUSICPLAYER_RATING:
+   case MUSICPLAYER_COMMENT:
+   case MUSICPLAYER_LYRICS:
++  case MUSICPLAYER_FILENAME:
+     strLabel = GetMusicLabel(info);
+   break;
+   case VIDEOPLAYER_TITLE:
+@@ -2083,6 +2096,17 @@
+   {
+     switch (condition)
+     {
++      case VALUE_IS_TRUE:
++        {
++          CStdString value;
++          if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
++            value = GetItemImage((const CFileItem *)item, info.GetData1());
++          else
++            value = GetImage(info.GetData1(), contextWindow);
++
++          bReturn = (value.Equals("true") || value.Equals("yes") || value.Equals("on") || value.Equals("1"));
++        }
++        break;
+       case SKIN_BOOL:
+         {
+           bReturn = g_settings.GetSkinBool(info.GetData1());
+@@ -2557,7 +2581,7 @@
+     strCpu.Format("%4.2f", g_cpuInfo.GetCoreInfo(info.GetData1()).m_fPct);
+     return strCpu;
+   }
+-  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_ALBUM_ARTIST)
++  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_FILENAME)
+     return GetMusicPlaylistInfo(info);
+   else if (info.m_info == CONTAINER_PROPERTY)
+   {
+@@ -3039,6 +3063,9 @@
+   case MUSICPLAYER_LYRICS: 
+     if (tag.GetLyrics().size()) { return tag.GetLyrics(); } 
+    	break;
++  case MUSICPLAYER_FILENAME:
++    if (tag.GetURL().size()) { return tag.GetURL(); }
++    break;
+   case MUSICPLAYER_TRACK_NUMBER:
+     {
+       CStdString strTrack;
+Index: xbmc/utils/GUIInfoManager.h
+===================================================================
+--- xbmc/utils/GUIInfoManager.h	(revision 35687)
++++ xbmc/utils/GUIInfoManager.h	(working copy)
+@@ -211,6 +211,7 @@
+ #define MUSICPLAYER_EXISTS          224
+ #define MUSICPLAYER_PLAYLISTPLAYING 225
+ #define MUSICPLAYER_ALBUM_ARTIST    226
++#define MUSICPLAYER_FILENAME        227
+ 
+ #define VIDEOPLAYER_TITLE             250
+ #define VIDEOPLAYER_GENRE             251
+@@ -322,6 +323,7 @@
+ #define STRING_COMPARE              411
+ #define STRING_STR                  412
+ #define INTEGER_GREATER_THAN        413
++#define VALUE_IS_TRUE               414
+ 
+ #define SKIN_HAS_THEME_START        500
+ #define SKIN_HAS_THEME_END          599 // allow for max 100 themes

@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <!-- General -->
+    <category label="30051">
+        <setting label="30100" type="lsep" />
+        <setting label="30110" type="enum" id="experience_theme" default="0" lvalues="30111|30112|30113|30114|30115|30116|30117|30118|30119|30120|30121" />
+        <setting label="30130" type="text" id="experience_theme_other_text" default="" subsetting="true" enable="StringCompare(Addon.Setting(experience_theme),10)" />
+        <setting label="30140" type="bool" id="experience_prefer_unwatched" default="true" />
+        <setting label="30101" type="lsep" />
+        <setting label="30150" type="bool" id="parental_control" default="false" />
+        <setting label="30160" type="enum" id="movie_rating_system" subsetting="true" default="0" values="MPAA|BBFC" enable="IsTrue(Addon.Setting(parental_control))" />
+        <setting label="30170" type="enum" id="mpaa_nr_rating" subsetting="true" default="2" values="G|PG|PG-13|R|NC-17" enable="IsTrue(Addon.Setting(parental_control))" visible="StringCompare(Addon.Setting(movie_rating_system),0)" />
+        <setting label="30170" type="enum" id="bbfc_nr_rating" subsetting="true" default="4" values="Uc|U|PG|12A|12|15|18|R18" enable="IsTrue(Addon.Setting(parental_control))" visible="StringCompare(Addon.Setting(movie_rating_system),1)" />
+    </category>
+
+    <!-- Categories -->
+    <category label="30052">
+        <setting label="30200" type="lsep" />
+        <setting label="30210" type="folder" id="mpaa_ratings_folder" default="" source="auto" />
+        <setting label="30220" type="folder" id="dolby_dts_folder" default="" source="auto" />
+        <setting label="30230" type="select" id="command_script" default="" mask="/" source="$PROFILE/modules/" />
+        <setting label="30240" type="bool" id="command_script_onpause" default="false" subsetting="true" enable="!IsEmpty(Addon.Setting(command_script))" />
+        <setting label="30201" type="lsep" />
+        <setting label="30250" type="enum" id="feature_presentation_intro_type" default="0" lvalues="30251|30252" />
+        <setting label="30270" type="enum" id="feature_presentation_intro_number" default="0" subsetting="true" lvalues="30271|30272|30273|30274|30275|30276|30277" />
+        <setting label="30280" type="folder" id="feature_presentation_intro_folder" default="" subsetting="true" source="auto" visible="IntegerGreaterThan(Addon.Setting(feature_presentation_intro_number),0)" />
+        <setting label="30290" type="video" id="feature_presentation_intro_file_video" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(feature_presentation_intro_number),0) + StringCompare(Addon.Setting(feature_presentation_intro_type),0)" />
+        <setting label="30290" type="image" id="feature_presentation_intro_file_image" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(feature_presentation_intro_number),0) + StringCompare(Addon.Setting(feature_presentation_intro_type),1)" />
+        <setting label="30260" type="slider" id="feature_presentation_intro_duration" default="7" subsetting="true" range="5,1,30" format="%1.f $ADDON[script.cinema.experience 30261]" visible="StringCompare(Addon.Setting(feature_presentation_intro_type),1)" />
+        <setting label="30202" type="lsep" />
+        <setting label="30250" type="enum" id="slideshow_intro_type" default="0" lvalues="30251|30252" />
+        <setting label="30270" type="enum" id="slideshow_intro_number" default="0" subsetting="true" lvalues="30271|30272|30273|30274|30275|30276|30277" />
+        <setting label="30280" type="folder" id="slideshow_intro_folder" default="" subsetting="true" source="auto" visible="IntegerGreaterThan(Addon.Setting(slideshow_intro_number),0)" />
+        <setting label="30290" type="video" id="slideshow_intro_file_video" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(slideshow_intro_number),0) + StringCompare(Addon.Setting(slideshow_intro_type),0)" />
+        <setting label="30290" type="image" id="slideshow_intro_file_image" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(slideshow_intro_number),0) + StringCompare(Addon.Setting(slideshow_intro_type),1)" />
+        <setting label="30260" type="slider" id="slideshow_intro_duration" default="7" subsetting="true" range="5,1,30" format="%1.f $ADDON[script.cinema.experience 30261]" visible="StringCompare(Addon.Setting(slideshow_intro_type),1)" />
+        <setting label="30203" type="lsep" />
+        <setting label="30250" type="enum" id="coming_attractions_intro_type" default="0" lvalues="30251|30252" />
+        <setting label="30270" type="enum" id="coming_attractions_intro_number" default="0" subsetting="true" lvalues="30271|30272|30273|30274|30275|30276|30277" />
+        <setting label="30280" type="folder" id="coming_attractions_intro_folder" default="" subsetting="true" source="auto" visible="IntegerGreaterThan(Addon.Setting(coming_attractions_intro_number),0)" />
+        <setting label="30290" type="video" id="coming_attractions_intro_file_video" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(coming_attractions_intro_number),0) + StringCompare(Addon.Setting(coming_attractions_intro_type),0)" />
+        <setting label="30290" type="image" id="coming_attractions_intro_file_image" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(coming_attractions_intro_number),0) + StringCompare(Addon.Setting(coming_attractions_intro_type),1)" />
+        <setting label="30260" type="slider" id="coming_attractions_intro_duration" default="7" subsetting="true" range="5,1,30" format="%1.f $ADDON[script.cinema.experience 30261]" visible="StringCompare(Addon.Setting(coming_attractions_intro_type),1)" />
+        <setting label="30204" type="lsep" />
+        <setting label="30250" type="enum" id="information_clips_type" default="0" lvalues="30251|30252" />
+        <setting label="30270" type="enum" id="information_clips_number" default="0" subsetting="true" lvalues="30271|30272|30273|30274|30275|30276|30277" />
+        <setting label="30280" type="folder" id="information_clips_folder" default="" subsetting="true" source="auto" visible="IntegerGreaterThan(Addon.Setting(information_clips_number),0)" />
+        <setting label="30290" type="video" id="information_clips_file_video" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(information_clips_number),0) + StringCompare(Addon.Setting(information_clips_type),0)" />
+        <setting label="30290" type="image" id="information_clips_file_image" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(information_clips_number),0) + StringCompare(Addon.Setting(information_clips_type),1)" />
+        <setting label="30260" type="slider" id="information_clips_duration" default="7" subsetting="true" range="5,1,30" format="%1.f $ADDON[script.cinema.experience 30261]" visible="StringCompare(Addon.Setting(information_clips_type),1)" />
+        <setting label="30205" type="lsep" />
+        <setting label="30250" type="enum" id="commercial_clips_type" default="0" lvalues="30251|30252" />
+        <setting label="30270" type="enum" id="commercial_clips_number" default="0" subsetting="true" lvalues="30271|30272|30273|30274|30275|30276|30277" />
+        <setting label="30280" type="folder" id="commercial_clips_folder" default="" subsetting="true" source="auto" visible="IntegerGreaterThan(Addon.Setting(commercial_clips_number),0)" />
+        <setting label="30290" type="video" id="commercial_clips_file_video" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(commercial_clips_number),0) + StringCompare(Addon.Setting(commercial_clips_type),0)" />
+        <setting label="30290" type="image" id="commercial_clips_file_image" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(commercial_clips_number),0) + StringCompare(Addon.Setting(commercial_clips_type),1)" />
+        <setting label="30260" type="slider" id="commercial_clips_duration" default="7" subsetting="true" range="5,1,30" format="%1.f $ADDON[script.cinema.experience 30261]" visible="StringCompare(Addon.Setting(commercial_clips_type),1)" />
+        <setting label="30206" type="lsep" />
+        <setting label="30250" type="enum" id="intermission_clips_type" default="0" lvalues="30251|30252" />
+        <setting label="30270" type="enum" id="intermission_clips_number" default="0" subsetting="true" lvalues="30271|30272|30273|30274|30275|30276|30277" />
+        <setting label="30280" type="folder" id="intermission_clips_folder" default="" subsetting="true" source="auto" visible="IntegerGreaterThan(Addon.Setting(intermission_clips_number),0)" />
+        <setting label="30290" type="video" id="intermission_clips_file_video" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(intermission_clips_number),0) + StringCompare(Addon.Setting(intermission_clips_type),0)" />
+        <setting label="30290" type="image" id="intermission_clips_file_image" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(intermission_clips_number),0) + StringCompare(Addon.Setting(intermission_clips_type),1)" />
+        <setting label="30260" type="slider" id="intermission_clips_duration" default="7" subsetting="true" range="5,1,30" format="%1.f $ADDON[script.cinema.experience 30261]" visible="StringCompare(Addon.Setting(intermission_clips_type),1)" />
+        <setting label="30207" type="lsep" />
+        <setting label="30250" type="enum" id="other_clips_type" default="0" lvalues="30251|30252" />
+        <setting label="30270" type="enum" id="other_clips_number" default="0" subsetting="true" lvalues="30271|30272|30273|30274|30275|30276|30277" />
+        <setting label="30280" type="folder" id="other_clips_folder" default="" subsetting="true" source="auto" visible="IntegerGreaterThan(Addon.Setting(other_clips_number),0)" />
+        <setting label="30290" type="video" id="other_clips_file_video" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(other_clips_number),0) + StringCompare(Addon.Setting(other_clips_type),0)" />
+        <setting label="30290" type="image" id="other_clips_file_image" default="" subsetting="true" source="auto" visible="!IntegerGreaterThan(Addon.Setting(other_clips_number),0) + StringCompare(Addon.Setting(other_clips_type),1)" />
+        <setting label="30260" type="slider" id="other_clips_duration" default="7" subsetting="true" range="5,1,30" format="%1.f $ADDON[script.cinema.experience 30261]" visible="StringCompare(Addon.Setting(other_clips_type),1)" />
+    </category>
+
+    <!-- Slideshow -->
+    <category label="30053">
+        <setting label="30300" type="lsep" />
+        <setting label="30310" type="folder" id="slideshow_folder" default="" source="auto" />
+        <setting label="30320" type="slider" id="slideshow_duration" default="15" subsetting="true" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30321]" enable="!IsEmpty(Addon.Setting(slideshow_folder))" />
+        <setting label="30330" type="slider" id="slide_duration" default="10" subsetting="true" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30331]" enable="!IsEmpty(Addon.Setting(slideshow_folder))" />
+        <setting label="30301" type="lsep" />
+        <setting label="30340" type="bool" id="slideshow_music" default="true" enable="!IsEmpty(Addon.Setting(slideshow_folder))" />
+        <setting label="30350" type="audio" id="slideshow_music_playlist" default="" subsetting="true" source="auto" enable="!IsEmpty(Addon.Setting(slideshow_folder)) + IsTrue(Addon.Setting(slideshow_music))" />
+        <setting label="30360" type="slider" id="slideshow_music_volume" default="0.0" subsetting="true" range="-60.0,0.6,0.0" format="%1.1f $ADDON[script.cinema.experience 30361]" enable="!IsEmpty(Addon.Setting(slideshow_folder)) + IsTrue(Addon.Setting(slideshow_music)) + !IsEmpty(Addon.Setting(slideshow_music_playlist))" />
+    </category>
+
+    <!-- Trailers -->
+    <category label="30054" >
+        <setting label="30400" type="lsep" />
+        <setting label="30440" type="enum" id="trailer_count" default="0" lvalues="30441|30442|30443|30444|30445|30446" />
+        <setting label="30401" type="lsep" />
+        <setting label="30410" type="enum" id="trailer_source_1" default="0" lvalues="30411|30412" visible="System.HasAddon(plugin.video.movie.trailers)" />
+        <setting label="30410" type="enum" id="trailer_source_2" default="1" lvalues="30412" visible="!System.HasAddon(plugin.video.movie.trailers)" />
+        <setting label="30420" type="folder" id="trailer_folder" subsetting="true" default="" source="auto" visible="!System.HasAddon(plugin.video.movie.trailers) | [System.HasAddon(plugin.video.movie.trailers) + StringCompare(Addon.Setting(trailer_source_1),1)]" />
+        <setting label="30430" type="bool" id="trailer_newest_only" subsetting="true" default="false" visible="System.HasAddon(plugin.video.movie.trailers) + StringCompare(Addon.Setting(trailer_source_1),0)]" />
+    </category>
+
+    <!-- Playlist order -->
+    <category label="30055">
+        <setting label="30500" type="lsep" />
+        <setting label="$ADDON[script.cinema.experience 30510] #1" type="select" id="playlist_item1" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #2" type="select" id="playlist_item2" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #3" type="select" id="playlist_item3" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #4" type="select" id="playlist_item4" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #5" type="select" id="playlist_item5" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #6" type="select" id="playlist_item6" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #7" type="select" id="playlist_item7" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #8" type="select" id="playlist_item8" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #9" type="select" id="playlist_item9" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #10" type="select" id="playlist_item10" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #11" type="select" id="playlist_item11" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #12" type="select" id="playlist_item12" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #13" type="select" id="playlist_item13" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #14" type="select" id="playlist_item14" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+        <setting label="$ADDON[script.cinema.experience 30510] #15" type="select" id="playlist_item15" default="$ADDON[script.cinema.experience 30511]" lvalues="30511|30512|30513|30514|30515|30516|30517|30518|30519|30520|30521|30522|30523|30524" />
+    </category>
+
+    <!-- Maintenance -->
+    <category label="30056">
+        <setting type="sep" />
+        <setting label="[B]$ADDON[script.xbmc.lyrics 30750][/B]" type="text" default="nuka1195" enable="false" />
+        <!--setting label="[B]$ADDON[script.xbmc.lyrics 30751][/B]" type="text" default="$VERSION" enable="false" /-->
+        <setting label="[B]$ADDON[script.xbmc.lyrics 30752][/B]" type="text" id="repo" default="http://xbmc-addons.googlecode.com/" enable="false" />
+        <setting label="[B]$ADDON[script.xbmc.lyrics 30753][/B]" type="text" default="$ADDON[script.xbmc.lyrics 30002]" enable="false" />
+        <setting label="[B]$ADDON[script.xbmc.lyrics 30754][/B]" type="text" default="nuka1195" enable="false" />
+        <setting type="sep" />
+        <setting label="30600" type="lsep" />
+        <setting label="30610" type="action" action="RunScript($CWD/resources/lib/xbox.py,updates)" visible="system.platform.xbox" />
+        <setting label="30615" type="action" action="RunScript($CWD/resources/lib/utils.py,changelog)" visible="system.platform.windows" />
+        <setting label="30620" type="action" action="RunScript($CWD/resources/lib/utils.py,readme)" />
+        <setting label="30625" type="action" action="RunScript($CWD/resources/lib/utils.py,license)" />
+        <setting label="30601" type="lsep" />
+        <setting label="30650" type="action" action="RunScript($CWD/resources/lib/pkgmgr.py)" />
+    </category>
+
+</settings>

@@ -1,0 +1,7 @@
+<slides>
+    <slide rating="PG" theme="George Lucas | Harrison Ford | Mark Hamil | Science Fiction | Star Wars">
+        <question format="N/A" />
+        <clue format="N/A" />
+        <answer format=".+?\.jpg" />
+    </slide>
+</slides>

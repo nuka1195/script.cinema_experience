@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<records date="Sat, 13 Feb 2010 01:45:01 -0800">
+    <movieinfo id="3490">
+        <info>
+            <title>44 Inch Chest</title>
+            <runtime>1:52</runtime>
+            <rating>R</rating>
+            <studio>Image Entertainment</studio>
+            <postdate>2009-12-21</postdate>
+            <releasedate>2010-01-15</releasedate>
+            <copyright>© Copyright 2010 Image Entertainment</copyright>
+            <director>Malcolm Venville</director>
+            <description>44 Inch Chest is a provocative, outrageously profane and surprisingly tender film amidst an explosion of unbridled testosterone.  The movie explores the masculine ego at breaking point, testing whether fear is stronger than love. Colin (Ray Winstone) is in agony, shattered by his wife’s (Joanne Whalley) infidelity. However, he has friends who do more than stand by; they kidnap his wife’s French lover and hold him prisoner so that Colin can restore his manhood with revenge.</description>
+        </info>
+        <cast>
+            <name>Ray Winstone</name>
+            <name>Ian McShane</name>
+            <name>Tom Wilkinson</name>
+            <name>Joanne Whalley</name>
+            <name>Dave Legeno</name>
+        </cast>
+        <genre>
+            <name>Drama</name>
+        </genre>
+        <poster>
+            <location>http://images.apple.com/moviesxml/s/independent/posters/44inchchest_l200912211625.jpg</location>
+            <xlarge>http://images.apple.com/moviesxml/s/independent/posters/44inchchest_xl200912211625.jpg</xlarge>
+        </poster>
+        <preview>
+            <large filesize="17487340">http://movies.apple.com/movies/independent/44inchchest/44inchchest_h640w.mov</large>
+        </preview>
+    </movieinfo>
+</records>

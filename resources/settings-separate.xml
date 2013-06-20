@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+
+    <!-- General -->
+    <category label="30051">
+        <setting label="30100" type="lsep"/>
+        <setting label="30110" type="enum" id="experience_theme" default="0" lvalues="30111|30112|30113|30114|30115|30116|30117|30118|30119|30120|30121"/>
+        <setting label="30130" subsetting="true" type="text" id="experience_theme_other_text" default="" enable="StringCompare(Addon.Setting(experience_theme),10)"/>
+        <setting label="30140" type="bool" id="experience_prefer_unwatched" default="true"/>
+        <setting label="30101" type="lsep"/>
+        <setting label="30150" type="bool" id="parental_control" default="false"/>
+        <setting label="30160" type="labelenum" id="movie_rating_system" default="MPAA" values="MPAA|BBFC" enable="IsTrue(Addon.Setting(parental_control))"/>
+        <setting label="30170" subsetting="true" type="labelenum" id="mpaa_nr_rating" default="PG-13" values="G|PG|PG-13|R|NC-17" enable="IsTrue(Addon.Setting(parental_control))" visible="StringCompare(Addon.Setting(movie_rating_system),MPAA)"/>
+        <setting label="30170" subsetting="true" type="labelenum" id="bbfc_nr_rating" default="12" values="Uc|U|PG|12A|12|15|18|R18" enable="IsTrue(Addon.Setting(parental_control))" visible="StringCompare(Addon.Setting(movie_rating_system),BBFC)"/>
+    </category>
+
+    <!-- Miscellaneous -->
+    <category label="30052">
+        <setting label="30203" type="lsep"/>
+        <setting label="30290" type="enum" id="trailer_count" default="0" lvalues="30291|30292|30293|30294|30295|30296"/>
+        <setting label="30260" type="enum" id="trailer_source_1" default="0" lvalues="30261|30262" visible="System.HasAddon(plugin.video.movie.trailers)"/>
+        <setting label="30260" type="enum" id="trailer_source_2" default="1" lvalues="30262" visible="!System.HasAddon(plugin.video.movie.trailers)"/>
+        <setting label="30270" subsetting="true" type="bool" id="trailer_newest_only" default="false" visible="System.HasAddon(plugin.video.movie.trailers) + StringCompare(Addon.Setting(trailer_source_1),0)]"/>
+        <setting label="30210" subsetting="true" type="folder" id="trailer_folder" default="" source="auto" visible="!System.HasAddon(plugin.video.movie.trailers) | [System.HasAddon(plugin.video.movie.trailers) + StringCompare(Addon.Setting(trailer_source_1),1)]"/>
+        <setting label="30200" type="lsep"/>
+        <setting label="30210" type="folder" id="mpaa_ratings_folder" default="" source="auto"/>
+        <setting label="30220" type="enum" id="mpaa_ratings_type" default="0" lvalues="30221|30222" enable="!IsEmpty(Addon.Setting(mpaa_ratings_folder))"/>
+        <setting label="30230" subsetting="true" type="slider" id="mpaa_ratings_duration" default="7" range="3,1,15" format="%1.f $ADDON[script.cinema.experience 30231]" enable="!IsEmpty(Addon.Setting(mpaa_ratings_folder)) + StringCompare(Addon.Setting(mpaa_ratings_type),1)"/>
+        <setting label="30201" type="lsep"/>
+        <setting label="30210" type="folder" id="dolby_dts_folder" default="" source="auto"/>
+        <setting label="30301" type="lsep"/>
+        <setting label="30350" type="audio" id="music_playlist" default="" source="auto" />
+        <setting label="30360" type="slider" id="music_volume" default="0.0" range="-60.0,0.6,0.0" format="%1.1f $ADDON[script.cinema.experience 30361]" enable="!IsEmpty(Addon.Setting(music_playlist))"/>
+    </category>
+
+    <!-- Commands -->
+    <category label="Commands">
+        <setting label="30202" type="lsep"/>
+        <setting label="30240" type="select" id="command_script" default="" mask="/" source="$PROFILE/modules/"/>
+        <setting label="30250" type="bool" id="command_script_onpause" default="false" enable="!IsEmpty(Addon.Setting(command_script))"/>
+        
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item1_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item1_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item1_number),0)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item1_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item1_number),0)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item1_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]"/>
+    </category>
+
+    <!-- Slideshow -->
+    <category label="30053">
+        <setting label="30300" type="lsep"/>
+        <setting label="Use image database" type="bool" id="slideshow_database" default="false"/>
+        <setting label="Path" subsetting="true" type="file" id="slideshow_database_path" default="" source="auto" mask=".db" enable="IsTrue(Addon.Setting(slideshow_database))"/>
+        <setting label="30310" type="folder" id="slideshow_folder" default="" source="auto" enable="!IsTrue(Addon.Setting(slideshow_database))"/>
+        <setting label="Time" type="lsep"/>
+        <setting label="30320" type="slider" id="slideshow_duration" default="15" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30321]" enable="!IsEmpty(Addon.Setting(slideshow_folder))"/>
+        <setting label="30330" type="slider" id="slide_duration" default="15" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30331]" enable="!IsEmpty(Addon.Setting(slideshow_folder))"/>
+        <setting label="30301" type="lsep"/>
+        <setting label="30340" type="bool" id="slideshow_music" default="true" enable="!IsEmpty(Addon.Setting(slideshow_folder))"/>
+    </category>
+
+    <!-- Playlist -->
+    <category label="30054">
+        <setting label="30400" type="lsep"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #1" type="select" id="playlist_item1" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item1_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item1),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(201) | Control.HasFocus(202) | Control.HasFocus(203) | Control.HasFocus(204) | Control.HasFocus(205)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item1_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item1_number),0) + Control.IsVisible(202)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item1_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item1_number),0) + Control.IsVisible(202)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item1_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(202)"/>
+        <setting type="sep" visible="Control.IsVisible(202)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #2" type="select" id="playlist_item2" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(202)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item2_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item2),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(207) | Control.HasFocus(208) | Control.HasFocus(209) | Control.HasFocus(210) | Control.HasFocus(211)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item2_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item2_number),0) + Control.IsVisible(208)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item2_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item2_number),0) + Control.IsVisible(208)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item2_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(208)"/>
+        <setting type="sep" visible="Control.IsVisible(208)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #3" type="select" id="playlist_item3" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(202) + !Control.IsVisible(208)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item3_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item3),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(213) | Control.HasFocus(214) | Control.HasFocus(215) | Control.HasFocus(216) | Control.HasFocus(217)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item3_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item3_number),0) + Control.IsVisible(214)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item3_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item3_number),0) + Control.IsVisible(214)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item3_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(214)"/>
+        <setting type="sep" visible="Control.IsVisible(214)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #4" type="select" id="playlist_item4" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(202) + !Control.IsVisible(208) + !Control.IsVisible(214)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item4_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item4),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(219) | Control.HasFocus(220) | Control.HasFocus(221) | Control.HasFocus(222) | Control.HasFocus(223)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item4_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item4_number),0) + Control.IsVisible(220)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item4_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item4_number),0) + Control.IsVisible(220)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item4_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(220)"/>
+        <setting type="sep" visible="Control.IsVisible(220)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #5" type="select" id="playlist_item5" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(208) + !Control.IsVisible(214) + !Control.IsVisible(220)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item5_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item5),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(225) | Control.HasFocus(226) | Control.HasFocus(227) | Control.HasFocus(228) | Control.HasFocus(229)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item5_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item5_number),0) + Control.IsVisible(226)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item5_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item5_number),0) + Control.IsVisible(226)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item5_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(226)"/>
+        <setting type="sep" visible="Control.IsVisible(226)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #6" type="select" id="playlist_item6" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(214) + !Control.IsVisible(220) + !Control.IsVisible(226)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item6_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item6),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(231) | Control.HasFocus(232) | Control.HasFocus(233) | Control.HasFocus(234) | Control.HasFocus(235)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item6_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item6_number),0) + Control.IsVisible(232)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item6_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item6_number),0) + Control.IsVisible(232)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item6_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(232)"/>
+        <setting type="sep" visible="Control.IsVisible(232)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #7" type="select" id="playlist_item7" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(220) + !Control.IsVisible(226) + !Control.IsVisible(232)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item7_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item7),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(237) | Control.HasFocus(238) | Control.HasFocus(239) | Control.HasFocus(240) | Control.HasFocus(241)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item7_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item7_number),0) + Control.IsVisible(238)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item7_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item7_number),0) + Control.IsVisible(238)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item7_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(238)"/>
+        <setting type="sep" visible="Control.IsVisible(238)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #8" type="select" id="playlist_item8" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(226) + !Control.IsVisible(232) + !Control.IsVisible(238)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item8_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item8),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(243) | Control.HasFocus(244) | Control.HasFocus(245) | Control.HasFocus(246) | Control.HasFocus(247)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item8_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item8_number),0) + Control.IsVisible(244)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item8_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item8_number),0) + Control.IsVisible(244)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item8_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(244)"/>
+        <setting type="sep" visible="Control.IsVisible(244)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #9" type="select" id="playlist_item9" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(232) + !Control.IsVisible(238) + !Control.IsVisible(244)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item9_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item9),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(249) | Control.HasFocus(250) | Control.HasFocus(251) | Control.HasFocus(252) | Control.HasFocus(253)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item9_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item9_number),0) + Control.IsVisible(250)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item9_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item9_number),0) + Control.IsVisible(250)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item9_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(250)"/>
+        <setting type="sep" visible="Control.IsVisible(250)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #10" type="select" id="playlist_item10" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(238) + !Control.IsVisible(244) + !Control.IsVisible(250)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item10_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item10),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(255) | Control.HasFocus(256) | Control.HasFocus(257) | Control.HasFocus(258) | Control.HasFocus(259)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item10_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item10_number),0) + Control.IsVisible(256)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item10_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item10_number),0) + Control.IsVisible(256)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item10_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(256)"/>
+        <setting type="sep" visible="Control.IsVisible(256)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #11" type="select" id="playlist_item11" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(244) + !Control.IsVisible(250) + !Control.IsVisible(256)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item11_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item11),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(261) | Control.HasFocus(262) | Control.HasFocus(263) | Control.HasFocus(264) | Control.HasFocus(265)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item11_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item11_number),0) + Control.IsVisible(262)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item11_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item11_number),0) + Control.IsVisible(262)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item11_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(262)"/>
+        <setting type="sep" visible="Control.IsVisible(262)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #12" type="select" id="playlist_item12" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(250) + !Control.IsVisible(256) + !Control.IsVisible(262)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item12_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item12),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(267) | Control.HasFocus(268) | Control.HasFocus(269) | Control.HasFocus(270) | Control.HasFocus(271)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item12_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item12_number),0) + Control.IsVisible(268)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item12_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item12_number),0) + Control.IsVisible(268)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item12_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(268)"/>
+        <setting type="sep" visible="Control.IsVisible(268)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #13" type="select" id="playlist_item13" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(256) + !Control.IsVisible(262) + !Control.IsVisible(268)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item13_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item13),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(273) | Control.HasFocus(274) | Control.HasFocus(275) | Control.HasFocus(276) | Control.HasFocus(277)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item13_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item13_number),0) + Control.IsVisible(274)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item13_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item13_number),0) + Control.IsVisible(274)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item13_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(274)"/>
+        <setting type="sep" visible="Control.IsVisible(274)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #14" type="select" id="playlist_item14" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(262) + !Control.IsVisible(268) + !Control.IsVisible(274)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item14_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item14),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(279) | Control.HasFocus(280) | Control.HasFocus(281) | Control.HasFocus(282) | Control.HasFocus(283)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item14_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item14_number),0) + Control.IsVisible(280)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item14_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item14_number),0) + Control.IsVisible(280)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item14_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(280)"/>
+        <setting type="sep" visible="Control.IsVisible(280)"/>
+        <setting label="$ADDON[script.cinema.experience 30410] #15" type="select" id="playlist_item15" default="$ADDON[script.cinema.experience 30411]" lvalues="30411|30412|30413|30414|30415|30416|30417|30418|30419" visible="!Control.IsVisible(268) + !Control.IsVisible(274) + !Control.IsVisible(280)" allowhiddenfocus="true"/>
+        <setting label="30430" subsetting="true" type="enum" id="playlist_item15_number" default="1" lvalues="30431|30432|30433|30434|30435|30436|30437" visible="StringCompare(Addon.Setting(playlist_item15),$ADDON$LBRACKETscript.cinema.experience 30413$RBRACKET) + [Control.HasFocus(285) | Control.HasFocus(286) | Control.HasFocus(287) | Control.HasFocus(288) | Control.HasFocus(289)]"/>
+        <setting label="30440" subsetting="true" type="file" id="playlist_item15_file" default="" source="auto" mask="$IMAGE|$VIDEO" visible="!IntegerGreaterThan(Addon.Setting(playlist_item15_number),0) + Control.IsVisible(286)"/>
+        <setting label="30450" subsetting="true" type="folder" id="playlist_item15_folder" default="" source="auto" visible="IntegerGreaterThan(Addon.Setting(playlist_item15_number),0) + Control.IsVisible(286)"/>
+        <setting label="30460" subsetting="true" type="slider" id="playlist_item15_duration" default="10" range="5,1,60" format="%1.f $ADDON[script.cinema.experience 30461]" visible="Control.IsVisible(286)"/>
+        <setting type="sep" visible="Control.IsVisible(286)"/>
+    </category>
+
+    <!-- Maintenance -->
+    <category label="30056">
+        <setting type="sep"/>
+        <setting label="[B]$ADDON[script.cinema.experience 30750][/B]" type="text" default="nuka1195" enable="false"/>
+        <!--setting label="[B]$ADDON[script.cinema.experience 30751][/B]" type="text" default="$VERSION" enable="false" /-->
+        <setting label="[B]$ADDON[script.cinema.experience 30752][/B]" type="text" id="repo" default="http://xbmc-addons.googlecode.com/" enable="false"/>
+        <setting label="[B]$ADDON[script.cinema.experience 30753][/B]" type="text" default="$ADDON[script.cinema.experience 30002]" enable="false"/>
+        <!--setting label="[B]$ADDON[script.cinema.experience 30754][/B]" type="text" default="nuka1195" enable="false"/-->
+        <setting type="sep"/>
+        <setting label="30600" type="lsep"/>
+        <setting label="30610" type="action" action="RunScript($CWD/resources/lib/xbox.py,updates)" visible="system.platform.xbox"/>
+        <setting label="30615" type="action" action="RunScript($CWD/resources/lib/utils.py,changelog)" visible="system.platform.windows + System.HasAddon(script.module.pysvn)"/>
+        <setting label="30620" type="action" action="RunScript($CWD/resources/lib/utils.py,readme)"/>
+        <setting label="30625" type="action" action="RunScript($CWD/resources/lib/utils.py,license)"/>
+        <setting label="30601" type="lsep"/>
+        <setting label="30650" type="action" action="RunScript($CWD/resources/lib/pkgmgr.py)"/>
+    </category>
+
+</settings>

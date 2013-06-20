@@ -1,0 +1,178 @@
+
+    <!-- Label separators -->
+    <string id="32100">Command Preferences</string>
+    <string id="32101">MPAA Rating Video</string>
+    <string id="32102">Dolby/DTS Video</string>
+    <string id="32103">Feature Presentation Intro</string>
+    <string id="32104">Slideshow Intro</string>
+    <string id="32105">Coming Attractions Intro</string>
+    <string id="32106">Information Clip</string>
+    <string id="32107">Commercial Clip</string>
+    <string id="32108">Intermission Clip</string>
+    <string id="32109">Other Clip</string>
+    <!-- Action Preferences settings -->
+    <string id="32120">Python command module</string>
+    <string id="32121">Install command module [I](settings will reload)[/I]</string>
+    <!-- Category sub settings-->
+    <string id="32140">Media type</string>
+    <string id="32141">Video(s)</string>
+    <string id="32142">Prefer unwatched items</string>
+    <string id="32143">Limit items by MPAA rating of movie</string>
+    <string id="32144">Image(s)</string>
+    <string id="32145">Image duration</string>
+    <string id="32146">Unwatched images only</string>
+    <string id="32147">Limit images by MPAA rating of movie</string>
+    <!-- Category choices-->
+    <string id="32160">File</string>
+    <string id="32161">Folder</string>
+    <!-- Media Types -->
+    <string id="32170">Video</string>
+    <string id="32171">Image</string>
+    <!-- Category choices-->
+    <string id="32180">Single video</string>
+    <string id="32181">1 Random video</string>
+    <string id="32182">2 Random videos</string>
+    <string id="32183">3 Random videos</string>
+    <string id="32184">4 Random videos</string>
+    <string id="32185">5 Random videos</string>
+    <string id="32186">10 Random videos</string>
+    <string id="32190">Single image</string>
+    <string id="32191">1 Random image</string>
+    <string id="32192">2 Random images</string>
+    <string id="32193">3 Random images</string>
+    <string id="32194">4 Random images</string>
+    <string id="32195">5 Random images</string>
+    <string id="32196">10 Random images</string>
+
+    <!-- Slideshow separators -->
+    <string id="32200">Slideshow Preferences</string>
+    <!-- Slideshow settings -->
+    <string id="32210">Slides folder</string>
+    <string id="32211">Theme</string>
+    <string id="32212">Other theme keyword(s)</string>
+    <string id="32213">Slideshow duration</string>
+    <string id="32214">Slide duration</string>
+    <string id="32215">Unwatched slides only</string>
+    <string id="32216">Limit slides by MPAA rating of movie</string>
+    <string id="32217">Play music during slideshow</string>
+    <string id="32218">Music folder</string>
+    <string id="32219">Music Volume</string>
+    <!-- Slideshow settings choices -->
+    <string id="32230">5 min</string>
+    <string id="32231">10 min</string>
+    <string id="32232">15 min</string>
+    <string id="32233">20 min</string>
+    <string id="32234">30 min</string>
+    <string id="32235">45 min</string>
+    <string id="32236">60 min</string>
+    <string id="32240">5 sec</string>
+    <string id="32241">7 sec</string>
+    <string id="32242">10 sec</string>
+    <string id="32243">15 sec</string>
+    <string id="32244">20 sec</string>
+    <string id="32245">30 sec</string>
+    <!-- Theme choices -->
+    <string id="32250">Off</string>
+    <string id="32251">Movie Title</string>
+    <string id="32252">Movie Genre</string>
+    <string id="32253">Movie Studio</string>
+    <string id="32254">Movie Writer</string>
+    <string id="32255">Movie Director</string>
+    <string id="32256">Kids</string>
+    <string id="32257">Adult</string>
+    <string id="32258">Other</string>
+    <!-- Volume choices -->
+    <string id="32280">Do Not Change</string>
+    <string id="32281">-42dB</string>
+    <string id="32282">-36dB</string>
+    <string id="32283">-30dB</string>
+    <string id="32284">-24dB</string>
+    <string id="32285">-18dB</string>
+    <string id="32286">-12dB</string>
+    <string id="32287">-6dB</string>
+    <string id="32288">0dB</string>
+    
+
+    <!-- Movie Trailers separators -->
+    <string id="32300">Movie Trailers Preferences</string>
+    <!-- Movie Trailers settings -->
+    <string id="32310">Trailer scraper</string>
+    <string id="32311">Folder</string>
+    <string id="32312">Database Path</string>
+    <string id="32313">Newest trailers only</string>
+    <string id="32314">Number of trailers</string>
+    <string id="32315">Trailer play method</string>
+    <string id="32316">Preferred trailer quality</string>
+    <string id="32317">Only 720p/1080p trailers</string>
+    <string id="32318">Unwatched trailers only</string>
+    <string id="32319">Limit trailers by MPAA rating of movie</string>
+    <!-- Movie Trailers settings choices-->
+    <string id="32330">Apple Movie Trailers (database)</string>
+    <string id="32331">Apple Movie Trailers (current)</string>
+    <string id="32332">Local folder</string>
+    <string id="32340">1 Trailer</string>
+    <string id="32341">2 Trailers</string>
+    <string id="32342">3 Trailers</string>
+    <string id="32343">4 Trailers</string>
+    <string id="32344">5 Trailers</string>
+    <string id="32345">10 Trailers</string>
+    <string id="32350">Stream</string>
+    <string id="32351">Download</string>
+    <string id="32360">Standard</string>
+    <string id="32361">480p</string>
+    <string id="32362">720p</string>
+    <string id="32363">1080p</string>
+
+    <!-- Playlist label separators -->
+    <string id="32400">Playlist Order</string>
+    <!-- Playlist items -->
+    <string id="32410">Item #1</string>
+    <string id="32411">Item #2</string>
+    <string id="32412">Item #3</string>
+    <string id="32413">Item #4</string>
+    <string id="32414">Item #5</string>
+    <string id="32415">Item #6</string>
+    <string id="32416">Item #7</string>
+    <string id="32417">Item #8</string>
+    <string id="32418">Item #9</string>
+    <string id="32419">Item #10</string>
+    <string id="32420">Item #11</string>
+    <string id="32421">Item #12</string>
+
+    <!-- Playlist category choices -->
+    <string id="32480">None</string>
+    <string id="32481">Execute command</string>
+    <string id="32482">Feature presentation</string>
+    <string id="32483">Slideshow</string>
+    <string id="32484">Movie trailer(s)</string>
+    <string id="32485">MPAA rating video</string>
+    <string id="32486">Dolby/DTS video</string>
+    <string id="32487">Feature presentation intro</string>
+    <string id="32488">Slideshow intro</string>
+    <string id="32489">Coming attractions intro</string>
+    <string id="32490">Information clip(s)</string>
+    <string id="32491">Commercial clip(s)</string>
+    <string id="32492">Intermission clip(s)</string>
+    <string id="32493">Other clip(s)</string>
+
+    <!-- Commands label separators -->
+    <string id="32500">Commands</string>
+    <!-- Misc commands -->
+    <string id="32510">View changelog</string>
+    <string id="32511">View readme</string>
+    <string id="32512">Reset slides watched status</string>
+    <string id="32513">Reset movie trailers watched status</string>
+    <string id="32514">Install command module [I](settings will reload)[/I]</string>
+
+    <!-- General label separators -->
+    <string id="32600">Movie Rating Preferences</string>
+    <!-- Misc preferences -->
+    <string id="32610">Movie rating system</string>
+    <string id="32611">Rating for unrated movies/trailers</string>
+
+    <!-- Compatible messages -->
+    <string id="32700">Version</string>
+    <string id="32701">This version of %s requires an</string>
+    <string id="32702">XBMC revision of %s or greater to run.</string>
+    <string id="32703">Please update your XBMC.</string>
+
